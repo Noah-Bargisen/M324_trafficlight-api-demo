@@ -47,7 +47,7 @@ pipeline {
       steps {
         script {
           // Run the container in detached mode
-          sh 'docker run -d --name traffic-api-container noahbargisen/traffic-api:$BUILD_NUMBER'
+          sh 'docker run -d -p 3000:3000 --name traffic-api-container noahbargisen/traffic-api:$BUILD_NUMBER'
         }
       }
     }
@@ -64,8 +64,8 @@ pipeline {
     stage('Remove traffic container') {
       steps {
         script {
-          // Stop and remove the container
-          sh 'docker stop traffic-api-container && docker rm traffic-api-container'
+          // Stop the container
+          sh 'docker stop traffic-api-container'
         }
       }
     }
