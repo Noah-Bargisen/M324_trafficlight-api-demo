@@ -1,0 +1,82 @@
+pipeline {
+  environment {
+    // this entry has to be created on your dockerhub-account
+    registry="noahbargisen/traffic-api"
+    // this is the key in Jenkins
+    registryCredential = "dockerhub"
+  }
+  agent any
+  stages {
+    stage('Cloning Repo') {
+      steps {
+        script {
+          // your repo branch
+          git branch: 'main',
+          // your public repo
+          url: 'https://github.com/Noah-Bargisen/M324_trafficlight-api-demo.git'
+        }
+      }
+    }
+    stage('Building image') {
+      steps {
+        script {
+          docker.build registry+":$BUILD_NUMBER"
+        }
+      }
+    }
+
+    stage('Install jest-cli') {
+      steps {
+        script {
+          // Install jest-cli globally in the Docker image
+          sh 'docker run --rm noahbargisen/traffic-api:$BUILD_NUMBER npm install -g jest-cli'
+        }
+      }
+    }
+
+    stage('Install dependencies') {
+      steps {
+        script {
+          // Install project dependencies
+          sh 'docker run --rm noahbargisen/traffic-api:$BUILD_NUMBER npm install'
+        }
+      }
+    }
+
+    stage('Run container for testing') {
+      steps {
+        script {
+          // Run the container in detached mode
+          sh 'docker run -d --name traffic-api-container noahbargisen/traffic-api:$BUILD_NUMBER'
+        }
+      }
+    }
+
+    stage('Test') {
+      steps {
+        script {
+          // Execute unit tests
+          sh 'docker exec traffic-api-container npm test'
+        }
+      }
+    }
+
+    stage('Remove traffic container') {
+      steps {
+        script {
+          // Stop and remove the container
+          sh 'docker stop traffic-api-container && docker rm traffic-api-container'
+        }
+      }
+    }
+
+    stage('Remove unused Docker image') {
+      steps {
+        script {
+          // Remove the Docker image to save space
+          sh 'docker rmi noahbargisen/traffic-api:$BUILD_NUMBER'
+        }
+      }
+    }
+  }
+}
