@@ -4,7 +4,7 @@ Pipeline Part 04 Exercise a02
 pipeline {
   environment {
     // this entry has to be created on your dockerhub-account
-    registry="readydocker1/traffic-api"
+    registry="noahbargisen/traffic-api"
     // this is the key in Jenkins
     registryCredential = "dockerhub"
   }
@@ -16,7 +16,7 @@ pipeline {
                   //your repo branch
                   git branch: 'main',
                   //your public repo
-                  url: 'https://github.com/bzzlab/M324_trafficlight-api-demo.git'
+                  url: 'https://github.com/Noah-Bargisen/M324_trafficlight-api-demo.git'
            }
          }
     }
