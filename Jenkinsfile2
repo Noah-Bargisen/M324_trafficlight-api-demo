@@ -47,7 +47,7 @@ pipeline {
       steps {
         script {
           // Run the container in detached mode
-          sh 'docker run -d -p 3000:3000 --name traffic-api-container noahbargisen/traffic-api:$BUILD_NUMBER'
+          sh 'docker run --rm -d -p 3000:3000 --name traffic-api-container noahbargisen/traffic-api:$BUILD_NUMBER'
         }
       }
     }
