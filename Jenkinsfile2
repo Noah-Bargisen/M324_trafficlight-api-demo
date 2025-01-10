@@ -56,7 +56,7 @@ pipeline {
       steps {
         script {
           // Execute unit tests
-          sh 'docker exec traffic-api-container npm test'
+          sh 'docker exec traffic-api-container npm run test'
         }
       }
     }
